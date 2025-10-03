@@ -1,4 +1,4 @@
-# Hidden in Plain Text: Leveraging LLMs to Identify Background Context for Implicit Textual and Multimodal Hate Speech Detection
+# Leveraging LLMs to Identify Background Context for Implicit Textual and Multimodal Hate Speech Detection
 
 Includes notebook and data.
 
