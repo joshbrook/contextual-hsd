@@ -8,7 +8,7 @@ last_updated: "2026-09-09"
 
 ---
 
-## Project-management baseline
+## Documentation baseline
 
 Established the documentation baseline for the Contextual HSD research artefact.
 
@@ -22,13 +22,22 @@ Refactored the notebook implementation into importable Python modules while pres
 - Added typed configuration, deterministic data splitting/training, reusable context strategies, structured MLP evaluation, and dependency-light unit tests.
 - Replaced shared-bucket latest-object retrieval with per-run Vertex batch manifests and isolated Cloud Storage prefixes.
 - Reduced the notebook to Kaggle orchestration and reporting; reusable implementation lives in `src/`, one named experiment dispatcher replaces duplicate strategy wrappers, and the README/architecture record dependency, configuration, and artifact usage.
+
+## Guided notebook and data defaults
+
 - Replaced the original notebook with `orchestrator.ipynb`, a guided starting point with one configuration block, selected-run preflight checks, and optional Vertex initialization.
 - Added a context-source choice: use included generated-context data by default or submit and collect a new manifest-tracked Vertex batch without overwriting the checked-in CSVs.
 - Made the included Latent Hatred and MAMI Base/Context CSVs the default notebook inputs; raw Latent Hatred stages remain an optional fallback.
+
+## Environment setup
+
 - Added an early local-Python compatibility check so Python 3.14 does not try to build Kaggle-pinned NumPy from source.
 - Added project-local virtual-environment and model-cache ignore rules for the documented local Python workflow.
 - Made the notebook bootstrap pip in uv-created environments and select CPU automatically when CUDA is unavailable.
 - Moved Kaggle Hugging Face cache writes from the read-only attached dataset to `/kaggle/working/`.
-- Added INFO logging for selected strategies, embedding dimensions, deterministic training runs, and aggregate metrics; the notebook enables only `src` package logs.
 - Loosened Python-version guidance so newer local interpreters receive a warning instead of an early rejection.
+
+## Observability and GPU compatibility
+
+- Added INFO logging for selected strategies, embedding dimensions, deterministic training runs, and aggregate metrics; the notebook enables only `src` package logs.
 - Added P100-aware Torch selection and an automatic compute-capability check to prevent unsupported CUDA kernel failures.
