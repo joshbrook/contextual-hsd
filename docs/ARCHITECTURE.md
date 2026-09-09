@@ -100,7 +100,7 @@ graph TD
 
 - `requirements.txt` lists intentionally loose runtime dependencies. Kaggle Python 3.10 is verified; newer local interpreters are allowed when upstream wheels are available.
 - Hugging Face downloads use a project-local cache on local runs and `/kaggle/working/contextual-hsd-cache/` on Kaggle, because attached Kaggle datasets are read-only.
-- The notebook's `device='auto'` setting selects CUDA only when available and otherwise uses CPU. GPU remains the practical runtime for timely full experiments.
+- The notebook's `device='auto'` setting selects CUDA only when available and when the installed Torch build supports the device's compute capability. The requirements select Torch 2.5.x for Python versions used by Kaggle P100 sessions; unsupported builds fall back to CPU. GPU remains the practical runtime for timely full experiments.
 - There is no CLI or package-install metadata; the Kaggle notebook imports `src` directly from the attached repository root.
 - No CI pipeline or deployment target is present.
 - The paper and notebook disagree on the Gemini model generation: the paper reports Gemini 2.0 Flash, while the current notebook configures `gemini-2.5-flash-lite`. Re-running the notebook is not a direct reproduction of the paper without resolving this difference.

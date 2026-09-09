@@ -45,7 +45,7 @@ The notebook keeps downloaded Hugging Face models in its ignored `.cache/hugging
 
 Run `orchestrator.ipynb` from top to bottom in Kaggle. Start with `dataset='latent'`, `experiment='zero-context'`, and `task='binary'`; this baseline needs no cloud credentials. Latent Hatred supports `task='binary'` and `task='multiclass'`; MAMI supports `task='binary'` and `task='multilabel'`. The notebook imports `src` once, prepares only the selected strategy's dependencies, and runs the shared orchestrator. There is intentionally no standalone CLI or package-install metadata.
 
-The default `device='auto'` selects CUDA in Kaggle or on a CUDA-enabled local PyTorch install, and CPU otherwise. CPU runs are functional but substantially slower than the intended Kaggle GPU environment.
+The default `device='auto'` selects CUDA only when the installed Torch build supports the GPU’s compute capability. Kaggle Tesla P100 sessions use the P100-compatible Torch 2.5 range; unsupported CUDA builds are detected and use CPU rather than failing inside the encoder. CPU runs are functional but substantially slower than the intended Kaggle GPU environment.
 
 ### Configuration
 

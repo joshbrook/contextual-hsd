@@ -1,7 +1,10 @@
 numpy
 pandas
 scikit-learn
-torch
+# Torch 2.5.x retains CUDA kernels for Kaggle Tesla P100 (compute capability 6.0).
+torch>=2.5,<2.6; python_version < "3.14"
+# Newer Python versions use the newest available Torch wheels; auto-device falls back if their GPU build lacks sm_60.
+torch>=2.7; python_version >= "3.14"
 sentence-transformers
 transformers
 gensim

@@ -31,3 +31,4 @@ Refactored the notebook implementation into importable Python modules while pres
 - Moved Kaggle Hugging Face cache writes from the read-only attached dataset to `/kaggle/working/`.
 - Added INFO logging for selected strategies, embedding dimensions, deterministic training runs, and aggregate metrics; the notebook enables only `src` package logs.
 - Loosened Python-version guidance so newer local interpreters receive a warning instead of an early rejection.
+- Added P100-aware Torch selection and an automatic compute-capability check to prevent unsupported CUDA kernel failures.
