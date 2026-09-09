@@ -27,7 +27,7 @@ This repo is the experimental artefact for *Leveraging LLMs for Context-Aware Im
 
 ### Prerequisites
 
-- Kaggle with GPU access and Python 3.10 is the documented execution environment. Local runs require Python 3.10–3.12; Python 3.14 is not supported by the pinned NumPy/PyTorch wheels.
+- Kaggle with GPU access and Python 3.10 is the verified execution environment. Local runs can use newer Python versions; dependency resolution depends on whether each upstream package publishes a compatible wheel.
 - The checked-in Latent Hatred and MAMI Base/Context CSVs are sufficient for the normal embedding experiments. ConceptNet and Google Cloud access are needed only for their corresponding experiment paths.
 
 ### Setup
@@ -37,7 +37,7 @@ This repo is the experimental artefact for *Leveraging LLMs for Context-Aware Im
 3. Change only the `RUN` choices you need. Paths are optional overrides for external/raw data.
 4. Read the notebook's preflight message if it reports a missing path; it names every required file for the selected run.
 
-For a local Windows run, create or select a Python 3.10–3.12 environment before opening the notebook. For example, if Python 3.10 is installed: `py -3.10 -m venv .venv`, then activate `.venv\\Scripts\\Activate.ps1` and start Jupyter from that environment. The notebook now stops before package installation with this same guidance when it detects Python 3.14 or later.
+For a local Windows run, create or select a Python environment before opening the notebook. Python 3.10 is the safest match for Kaggle; newer versions are allowed and the notebook will warn that package resolution may take longer or require a compatible wheel. For example: `py -3.10 -m venv .venv`, then activate `.venv\\Scripts\\Activate.ps1` and start Jupyter from that environment.
 
 The notebook keeps downloaded Hugging Face models in its ignored `.cache/huggingface/` directory locally and in `/kaggle/working/contextual-hsd-cache/` on Kaggle, rather than attempting to write inside the read-only attached dataset.
 
@@ -92,7 +92,7 @@ For `append-embed`, `embed-concat`, and `context-embed`, `context_source='includ
 - `orchestrator.ipynb`: guided Kaggle runner and the recommended starting point.
 - `src/`: reusable data, representation, model, experiment, and Vertex batch modules.
 - `tests/`: dependency-light unit tests that mock model and cloud work.
-- `requirements.txt`: pinned Kaggle runtime dependencies.
+- `requirements.txt`: runtime dependencies with intentionally loose version constraints.
 - `paper.pdf`: accompanying research paper, including methods, results, limitations, and ethical considerations.
 - `data/`: checked-in generated-context and annotation data artefacts.
 - `docs/`: project intent, current architecture, and change history.

@@ -81,7 +81,7 @@ graph TD
 
 - `orchestrator.ipynb`: guided runnable experiment sequence.
 - `src/config.py` and `src/onboarding.py`: typed settings and selected-run preflight validation.
-- `src/data.py`, `embeddings.py`, `context.py`, `modeling.py`, `experiments.py`, `vertex.py`: reusable pipeline components; `experiments.py` exposes the single named experiment dispatcher.
+- `src/data.py`, `embeddings.py`, `context.py`, `modeling.py`, `experiments.py`, `vertex.py`: reusable pipeline components; `experiments.py` exposes the single named experiment dispatcher and emits progress summaries through Python logging.
 - `tests/`: offline unit suite.
 - `data/latent hatred/`: included Latent Hatred context and NER artefacts.
 - `data/mami/`: included MAMI context artefact.
@@ -98,7 +98,7 @@ graph TD
 
 ## 9. Operational Notes
 
-- `requirements.txt` pins the Kaggle Python 3.10 runtime dependencies. The orchestrator rejects local Python 3.14+ before installation because the pinned NumPy/PyTorch wheels are not available for that interpreter.
+- `requirements.txt` lists intentionally loose runtime dependencies. Kaggle Python 3.10 is verified; newer local interpreters are allowed when upstream wheels are available.
 - Hugging Face downloads use a project-local cache on local runs and `/kaggle/working/contextual-hsd-cache/` on Kaggle, because attached Kaggle datasets are read-only.
 - The notebook's `device='auto'` setting selects CUDA only when available and otherwise uses CPU. GPU remains the practical runtime for timely full experiments.
 - There is no CLI or package-install metadata; the Kaggle notebook imports `src` directly from the attached repository root.

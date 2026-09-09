@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import random
 from dataclasses import dataclass
 from typing import Any, Sequence
@@ -10,6 +11,8 @@ import numpy as np
 import pandas as pd
 
 from .config import TrainingConfig
+
+LOGGER = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -102,6 +105,16 @@ def run_embedding_experiment(
     if train_frame.empty or test_frame.empty:
         raise ValueError("No examples remain after target preparation")
     device = training.device if training.device == "cpu" or torch.cuda.is_available() else "cpu"
+    LOGGER.info(
+        "Preparing MLP train_rows=%d test_rows=%d labels=%s dimension=%d device=%s runs=%d epochs=%d",
+        len(train_frame),
+        len(test_frame),
+        label_names,
+        len(train_frame["embeddings"].iloc[0]),
+        device,
+        training.runs,
+        training.epochs,
+    )
     x_train = torch.tensor(np.vstack(train_frame["embeddings"].to_numpy()), dtype=torch.float32, device=device)
     x_test = torch.tensor(np.vstack(test_frame["embeddings"].to_numpy()), dtype=torch.float32, device=device)
     y_train = torch.tensor(train_targets, dtype=torch.float32 if multilabel else torch.long, device=device)
@@ -110,7 +123,9 @@ def run_embedding_experiment(
     reports: list[dict[str, Any]] = []
     best_f1, best_true, best_predictions = -1.0, np.array([]), np.array([])
     for run_index in range(training.runs):
-        _seed_everything(training.seed_for_run(run_index))
+        seed = training.seed_for_run(run_index)
+        LOGGER.info("Training run %d/%d seed=%d", run_index + 1, training.runs, seed)
+        _seed_everything(seed)
         model = _build_model(x_train.shape[1], len(label_names), training).to(device)
         optimizer = optim.Adam(model.parameters(), lr=training.learning_rate)
         criterion = torch.nn.BCEWithLogitsLoss() if multilabel else torch.nn.CrossEntropyLoss()
@@ -132,11 +147,12 @@ def run_embedding_experiment(
         report = classification_report(truth, predictions, target_names=label_names, output_dict=True, zero_division=0)
         reports.append(report)
         mean_f1 = float(np.mean([report[label]["f1-score"] for label in label_names]))
+        LOGGER.info("Finished training run %d/%d macro_f1=%.4f", run_index + 1, training.runs, mean_f1)
         if mean_f1 > best_f1:
             best_f1, best_true, best_predictions = mean_f1, truth, predictions
 
     average = _average_reports(reports)
-    return EvaluationResult(
+    result = EvaluationResult(
         labels=label_names,
         reports=tuple(reports),
         average_report=average,
@@ -146,6 +162,13 @@ def run_embedding_experiment(
         best_true=best_true,
         best_predictions=best_predictions,
     )
+    LOGGER.info(
+        "MLP evaluation complete macro_precision=%.4f macro_recall=%.4f macro_f1=%.4f",
+        result.macro_precision,
+        result.macro_recall,
+        result.macro_f1,
+    )
+    return result
 
 
 def format_evaluation(result: EvaluationResult) -> str:

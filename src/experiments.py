@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Callable, Sequence
 
 import numpy as np
@@ -9,6 +10,8 @@ import pandas as pd
 
 from .embeddings import append_context, concatenate_embeddings
 from .modeling import EvaluationResult, run_embedding_experiment
+
+LOGGER = logging.getLogger(__name__)
 
 EXPERIMENTS = (
     "zero-context",
@@ -44,13 +47,23 @@ def run_experiment(
     """
     if experiment not in EXPERIMENTS:
         raise ValueError(f"Unknown experiment {experiment!r}; choose one of {', '.join(EXPERIMENTS)}")
+    LOGGER.info(
+        "Starting experiment=%s train_rows=%d test_rows=%d labels=%s multilabel=%s",
+        experiment,
+        len(train),
+        len(test),
+        labels,
+        multilabel,
+    )
     if experiment == "direct-llm":
         if predictions is None:
             raise ValueError("direct-llm requires predictions")
         from sklearn.metrics import classification_report
 
         truth = test.loc[:, list(labels)].to_numpy() if multilabel else test[labels].tolist()
-        return classification_report(truth, predictions, output_dict=True, zero_division=0)
+        report = classification_report(truth, predictions, output_dict=True, zero_division=0)
+        LOGGER.info("Completed direct-llm evaluation accuracy=%.4f", report.get("accuracy", 0.0))
+        return report
     train = train.copy()
     test = test.copy()
     train_text = train[text_column].tolist()
@@ -94,4 +107,11 @@ def run_experiment(
         train["embeddings"] = list(embedder([context_provider(text) for text in train_text]))
         test["embeddings"] = list(embedder([context_provider(text) for text in test_text]))
 
-    return run_embedding_experiment(train, test, labels, training, multilabel)
+    dimension = len(train["embeddings"].iloc[0])
+    LOGGER.info("Prepared experiment=%s embeddings train=%d test=%d dimension=%d", experiment, len(train), len(test), dimension)
+    result = run_embedding_experiment(train, test, labels, training, multilabel)
+    if isinstance(result, EvaluationResult):
+        LOGGER.info("Completed experiment=%s macro_f1=%.4f", experiment, result.macro_f1)
+    else:
+        LOGGER.info("Completed experiment=%s result_type=%s", experiment, type(result).__name__)
+    return result

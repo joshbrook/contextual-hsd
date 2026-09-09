@@ -29,3 +29,5 @@ Refactored the notebook implementation into importable Python modules while pres
 - Added project-local virtual-environment and model-cache ignore rules for the documented local Python workflow.
 - Made the notebook bootstrap pip in uv-created environments and select CPU automatically when CUDA is unavailable.
 - Moved Kaggle Hugging Face cache writes from the read-only attached dataset to `/kaggle/working/`.
+- Added INFO logging for selected strategies, embedding dimensions, deterministic training runs, and aggregate metrics; the notebook enables only `src` package logs.
+- Loosened Python-version guidance so newer local interpreters receive a warning instead of an early rejection.
