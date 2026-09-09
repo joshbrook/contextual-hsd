@@ -2,9 +2,7 @@
 
 ```yaml
 document: "CHANGELOG"
-project: "Contextual HSD"
-owner: "Joshua Wolfe Brook"
-status: "Active"
+owner: "Joshua Brook"
 last_updated: "2026-09-09"
 ```
 
