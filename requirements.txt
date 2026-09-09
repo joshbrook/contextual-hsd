@@ -1,0 +1,16 @@
+numpy
+pandas
+scikit-learn
+torch
+sentence-transformers
+transformers
+gensim
+nltk
+requests
+Wikipedia-API
+wordfreq
+statsmodels
+google-genai
+google-cloud-storage
+pytest
+ipykernel
