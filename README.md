@@ -70,7 +70,7 @@ For `append-embed`, `embed-concat`, and `context-embed`, `context_source='includ
 | Goal | Dataset | Experiment | Extra requirement |
 |------|---------|------------|-------------------|
 | First successful run | `latent` | `zero-context` | Included Base CSV only. |
-| Compare LLM-generated context | `latent` or `mami` | `embed-concat` | Default: included context CSV. Optional: regenerate through the manifest-based Vertex flow. |
+| Compare LLM-generated context | `latent` or `mami` | `append-embed` or `embed-concat` or `context-embed` | Default: included context CSV. Optional: regenerate through the manifest-based Vertex flow. |
 | Compare entity linking | `latent` or `mami` | `rel` | Kaggle internet access for REL and Wikipedia. |
 | Compare ConceptNet | `latent` or `mami` | `conceptnet` | Local Numberbatch vectors. |
 | Generate new context or direct predictions | either | Vertex batch flow | Kaggle `GOOGLE_API_KEY` secret plus project and bucket in `RUN`. |
